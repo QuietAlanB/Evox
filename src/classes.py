@@ -21,16 +21,26 @@ class Consumable:
         
 
 class Creature:
-    def __init__(self, pos, color, health = 100):
+    def __init__(self, pos, color, hunger = 100, maxHunger = 100, hungerRate = 1, speed = 1, reproductiveUrge = 0, reproductiveUrgeRate = 1):
         self.pos = pos
         self.color = color
-        self.health = health
-        self.maxHealth = health
+
+        # === health ===
+        self.hunger = hunger
+        self.maxHunger = maxHunger
+        self.hungerRate = hungerRate
+
+        # === movement ===
+        self.moving = False
+        self.speed = speed
+
+        # === reproduction ===
+        self.reproductiveUrge = reproductiveUrge
+        self.reproductiveUrgeRate = reproductiveUrgeRate
+        
 
     def move(self, x, y):
-        mx = self.pos.x + x * 10
-        my = self.pos.y + y * 10
-        return Vector2(mx, my)
+        self.pos = Vector2(x, y)
 
     def update(self):
         self.health -= 0.5
