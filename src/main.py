@@ -1,8 +1,10 @@
+from ctypes import c_uint32
+import os
 import pygame
 import random
 from vector2 import Vector2
 from classes import *
-from screen import screen
+from screen import *
 
 pygame.init()
 
@@ -12,29 +14,7 @@ clock = pygame.time.Clock()
 framerate = 60
 ticks = 0
 
-
-# ===== some function =====
-def everyTick(tick):
-    if ticks % tick == 0:
-        return True
-    return False
-
-
-# ===== defining variables =====
-creatures = []
-food = []
-
-# === creature spawning ===
-for i in range(100):
-    c = Creature(Vector2(random.randrange(0, 900, 10), random.randrange(0, 900, 10)), (255, 0, 0))
-    creatures.append(c)
-
-# === food spawning ===
-for i in range(1000):
-    f = Consumable(Vector2(random.randrange(0, 900, 10), random.randrange(0, 900, 10)), (0, 255, 0), random.randint(50, 100))
-    f.color = (0, (f.heal / 100) * 255, 0)
-
-    food.append(f)
+t = Creature(Vector2(450, 450), 3, 45, (255, 0, 0), Vector2(1, 0))
 
 # ===== main loop =====
 while running:
@@ -45,10 +25,12 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
+   
     screen.fill((0, 0, 0))
 
-    
+    t.move(2)
+
+    t.drawUpdate()
 
     pygame.display.update()
     clock.tick(framerate)
