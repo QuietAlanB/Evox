@@ -1,5 +1,16 @@
 ====== gonna do: ======
 - pathfinding
+- add some traits
+- - strength could be used to challenge other creatures and to carry things like food
+- - reprodutive rate is how fast a creature reproduces
+- - sight is used to see things, such as food, other creatures, etc.
+- - speed is used to move faster, but uses up more hunger
+- - personality traits
+- - - angry makes the creature more aggresive and pick fight as most options
+- - - shy makes the creature less socially interactive and will just do things alone
+- - - happy is the default, where a creature will just use the best option to get food
+- - loyalty will tell the creature how to interact with others. if this value is higher, they will help their friends and family if they're hurt
+- actual moving towards food
 
 ====== doing: ======
 

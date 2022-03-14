@@ -18,8 +18,39 @@ def rotatePoint(point, center, angle):
 
 
 
+
+class Food:
+    def __init__(self, pos, color, size):
+        self.pos = pos
+        self.color = color
+        self.radius = size
+
+    # ===== on consume =====
+    def onConsume(self, creature):
+        frontDist = ((self.pos.x - creature.front.x) ** 2 + (self.pos.y - creature.front.y) ** 2)
+        topDist = ((self.pos.x - creature.top.x) ** 2 + (self.pos.y - creature.top.y) ** 2)
+        bottomDist = ((self.pos.x - creature.bottom.x) ** 2 + (self.pos.y - creature.bottom.y) ** 2)
+        radSqr = self.radius ** 2
+
+        # === if its lower ===
+        if (frontDist <= radSqr or
+            topDist <= radSqr or
+            bottomDist <= radSqr): 
+            return True
+
+        return False
+
+
+    # ===== draw update =====
+    def drawUpdate(self):
+        gfxdraw.aacircle(screen, int(self.pos.x), int(self.pos.y), int(self.radius), self.color)
+        gfxdraw.filled_circle(screen, int(self.pos.x), int(self.pos.y), int(self.radius), self.color)
+
+
+
+
 class Creature:
-    def __init__(self, pos, size, angle, color, dir):
+    def __init__(self, pos, size, angle, color, dir, health, hunger, reproduction, traits):
         self.pos = pos
         self.initialPos = pos
         self.color = color
@@ -29,6 +60,14 @@ class Creature:
         self.rotation = self.angle * (math.pi / 180)
         self.center = self.pos
 
+        # ==== info ====
+        self.health = health
+        self.hunger = hunger
+        self.traits = traits
+        self.foodInfo = {"food": None}
+        self.mateInfo = {"mate": None}
+
+        # ==== point positions ====
         self.front = Vector2(self.pos.x + self.dir.x * self.size, self.pos.y + self.dir.y * self.size)
         self.top = Vector2(self.pos.x - self.size, self.pos.y + self.size)
         self.bottom = Vector2(self.pos.x - self.size, self.pos.y - self.size)
@@ -104,6 +143,18 @@ class Creature:
         self.top = rotatePoint(self.top, self.center, self.rotation)
         self.bottom = rotatePoint(self.bottom, self.center, self.rotation)
 
+
+
+    # ======= target food =======
+    def targetFood(self, food):
+        creatureDir = (self.front - self.pos).normalized()
+        foodDir = (food.pos - self.pos).normalized()
+
+        lookAmount = creatureDir.dot(foodDir)
+        lookThreshold = 0.99
+        
+        if not lookAmount > lookThreshold: self.turn(-1)
+        if lookAmount > lookThreshold: self.move(2)
 
 
     # ======= draw update =======
