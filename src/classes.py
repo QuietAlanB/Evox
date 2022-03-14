@@ -1,8 +1,11 @@
+import random
 import pygame
 from screen import *
 from pygame import gfxdraw
 import math
 
+
+# ======= functions =======
 def rotatePoint(point, center, angle):
     s = math.sin(angle)
     c = math.cos(angle)
@@ -17,13 +20,21 @@ def rotatePoint(point, center, angle):
     return point
 
 
+# ======= clamp =======
+def clamp(value, start, end):
+    if value > end: value = end
+    if value < start: value = start
+    return value
+
 
 
 class Food:
-    def __init__(self, pos, color, size):
+    def __init__(self, pos, color, size, hunger, heal = 0):
         self.pos = pos
         self.color = color
         self.radius = size
+        self.hunger = hunger
+        self.heal = heal
 
     # ===== on consume =====
     def onConsume(self, creature):
@@ -63,6 +74,7 @@ class Creature:
         # ==== info ====
         self.health = health
         self.hunger = hunger
+        self.reproduction = reproduction
         self.traits = traits
         self.foodInfo = {"food": None}
         self.mateInfo = {"mate": None}
@@ -80,6 +92,9 @@ class Creature:
 
         # ==== point scaling ====
         self.scale(self.size)
+
+        # ==== other ====
+        self.turnInfo = {"turning": False, "angle": 0, "amount":1}
 
 
 
@@ -146,20 +161,85 @@ class Creature:
 
 
     # ======= target food =======
-    def targetFood(self, food):
+    def searchFood(self, food):
+        if food == None: self.foodInfo['food'] = None
+        elif abs(self.pos - food.pos) < Vector2(self.traits['sight'], self.traits['sight']): 
+            self.foodInfo['food'] = food
+            self.turnInfo['turning'] = False
+
+    
+
+    # ======= move to food =======
+    def moveToFood(self):
+        if self.foodInfo['food'] == None: return
+
         creatureDir = (self.front - self.pos).normalized()
-        foodDir = (food.pos - self.pos).normalized()
+        foodDir = (self.foodInfo['food'].pos - self.pos).normalized()
 
         lookAmount = creatureDir.dot(foodDir)
-        lookThreshold = 0.99
+        lookThreshold = 0.95
+
+        distance = abs(self.front - self.pos)
         
-        if not lookAmount > lookThreshold: self.turn(-1)
-        if lookAmount > lookThreshold: self.move(2)
+        if not lookAmount > lookThreshold: 
+            self.turn(1)
+
+        if lookAmount > lookThreshold: pass
+
+
+
+    # ======= eat food =======
+    def eatFood(self, food):
+        self.hunger['amount'] += food.hunger
+        self.foodInfo['food'] = None
+
+
+
+    # ======= stats update =======
+    def statsUpdate(self):
+        self.health['amount'] += self.health['regen']
+        self.hunger['amount'] -= self.hunger['loss']
+        self.reproduction['amount'] += self.traits['reprRate']
+
+        self.health['amount'] = clamp(self.health['amount'], 0, 100)
+        self.hunger['amount'] = clamp(self.hunger['amount'], 0, 100)
+        self.reproduction['amount'] = clamp(self.reproduction['amount'], 0, 100)
+
+
+
+
+
+    # ======= move update =======
+    def moveUpdate(self):
+        self.move(self.traits['speed'])
+
+
+        # ===== no food so it moves randomly =====
+        if self.foodInfo['food'] == None:
+            
+            # === start turning randomly ===
+            if not self.turnInfo['turning']:
+                self.turnInfo['angle'] = random.randrange(-110, 110, self.traits['speed'])
+                self.turnInfo['amount'] = random.choice([1 * self.traits['speed'], -1 * self.traits['speed']])
+                self.turnInfo['turning'] = True
+
+            # === in the process of turning ===
+            if self.turnInfo['turning']:
+                if self.angle % 360 != self.turnInfo['angle'] % 360: self.turn(self.turnInfo['amount'])
+                else: self.turnInfo['turning'] = False
+
+        else:
+            self.moveToFood()
+
 
 
     # ======= draw update =======
     def drawUpdate(self):
         self.center = self.pos
+
+        # === dont allow outside map ===
+        self.pos.x = clamp(self.pos.x, 0, 900)
+        self.pos.y = clamp(self.pos.y, 0, 900)
 
         points = [ (self.front.x, self.front.y),
                    (self.top.x, self.top.y),

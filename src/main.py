@@ -15,24 +15,43 @@ framerate = 60
 ticks = 0
 
 
+# ===== functions =====
+def everyTick(tick):
+    if ticks == tick:
+        return True
+    return False
+
 # ===== defining some variables =====
 creatures = []
 food = []
 
 
 # ===== creatures and stuff =====
-c = Creature(
-            Vector2(450, 450), 3, 45, (255, 0, 0), Vector2(1, 0), 
-            {"amount": 100, "max": 100, "regen": 0.1}, 
-            {"amount":100, "max":100, "loss":1}, 
-            {"amount":0, "max":100}, 
-            {"speed":5, "sight": 7, "reprRate":1}
-            )
+for i in range(50):
+    c = Creature(
+                Vector2(random.randint(0, 900), random.randint(0, 900)), 3, 180, (255, 0, 0), Vector2(1, 0), 
+                {"amount": 100, "max": 100, "regen": 0.1}, 
+                {"amount":100, "max":100, "loss":1}, 
+                {"amount":0, "max":100}, 
+                {"speed":1, "sight": 50, "reprRate":1}
+                )
 
-f = Food(Vector2(400, 400), (0, 255, 0), 5)
+    f = Food(Vector2(random.randint(0, 900), random.randint(0, 900)), (0, 255, 0), 5, 10)
+    
+    '''
+    c = Creature(
+                Vector2(450, 450), 3, 0, (255, 0, 0), Vector2(1, 0), 
+                {"amount": 100, "max": 100, "regen": 0.1}, 
+                {"amount":100, "max":100, "loss":1}, 
+                {"amount":0, "max":100}, 
+                {"speed":1, "sight": 100, "reprRate":1}
+                )
 
-food.append(f)
-creatures.append(c)
+    f = Food(Vector2(400, 450), (0, 255, 0), 5, 10)
+    '''
+
+    food.append(f)
+    creatures.append(c)
 
 
 # ===== main loop =====
@@ -49,12 +68,19 @@ while running:
 
     # ===== creature updates =====
     for c in creatures:
+        c.moveToFood()
+
+        if c.foodInfo['food'] not in food: c.searchFood(None)
+
+        # === creature-food updates ===
         for f in food:
-            c.targetFood(f)
+            c.searchFood(f)
 
             if f.onConsume(c):
+                c.eatFood(f)
                 food.remove(f)
 
+        c.moveUpdate()
         c.drawUpdate()
 
     # ===== food updates =====
