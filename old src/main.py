@@ -1,9 +1,10 @@
+from ctypes import c_uint32
 import os
 import pygame
 import random
 from vector2 import Vector2
 from classes import *
-from screen import *
+from globals import *
 
 pygame.init()
 
@@ -14,43 +15,45 @@ framerate = 60
 ticks = 0
 
 
-# ===== some function =====
+# ===== functions =====
 def everyTick(tick):
-    if ticks % tick == 0:
+    if ticks == tick:
         return True
     return False
 
-
-def average(lst):
-    n = 0
-
-    for item in lst:
-        n += item
-
-    if len(lst) != 0: n /= len(lst)
-    else: n = 0
-
-    return n
-
-
-# ===== defining variables =====
+# ===== defining some variables =====
 creatures = []
 food = []
-lineGraphPopulation = []
-lineGraphReprRate = []
-reprRateAvg = []
-viewingLineGraph = False
-extinct = False
 
 
-# === creature spawning ===
-for i in range(10):
-    c = Creature(Vector2(random.randrange(0, 890, 10), random.randrange(0, 890, 10)), random.randint(0, 1), 0, 140, 100, 100, 0.1, 100, 100, 1, 0, 100, 1.25, 3, 9, random.randint(0, 1), Vector2(0, 10), 0)
+# ===== creatures and stuff =====
+for i in range(50):
+    c = Creature(
+                Vector2(random.randint(0, 900), random.randint(0, 900)), 3, 180, (255, 0, 0), Vector2(1, 0), 
+                {"amount": 0, "max": 120, "gain": 1}, 
+                {"amount": 100, "max": 100, "regen": 0.1}, 
+                {"amount":100, "max":100, "loss":1}, 
+                {"amount":0, "max":100}, 
+                {"speed":1, "sight": 50, "reprRate":1}
+                )
+
+    f = Food(Vector2(random.randint(0, 900), random.randint(0, 900)), (0, 255, 0), 5, 10)
+    
+    '''
+    c = Creature(
+                Vector2(450, 450), 3, 0, (255, 0, 0), Vector2(1, 0), 
+                {"amount": 100, "max": 100, "regen": 0.1}, 
+                {"amount":100, "max":100, "loss":1}, 
+                {"amount":0, "max":100}, 
+                {"speed":1, "sight": 100, "reprRate":1}
+                )
+
+    f = Food(Vector2(400, 450), (0, 255, 0), 5, 10)
+    '''
+
+    food.append(f)
     creatures.append(c)
 
-for i in range(0):
-    f = Food(Vector2(random.randrange(0, 900, 10), random.randrange(0, 900, 10)), (0, 255, 0), 1, 5)
-    food.append(f)
 
 # ===== main loop =====
 while running:
@@ -61,91 +64,32 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_g:
-            viewingLineGraph = not viewingLineGraph
-
    
     screen.fill((0, 0, 0))
 
-    generations = []
-
-    for f in food:
-        if not viewingLineGraph:
-            f.drawUpdate()
-
-    reprRateAvg = []
-
+    # ===== creature updates =====
     for c in creatures:
-        generations.append(c.generation)
+        c.moveToFood()
 
+        if c.foodInfo['food'] not in food: c.searchFood(None)
         if c.dead:
             creatures.remove(c)
             continue
 
-
-        # === mate target ===
-        if (c.reproductiveUrge > (c.maxReproductiveUrge / 4)) and ((100 - c.reproductiveUrge) < c.hunger) and (c.mateInfo['mate'] == None) and (c.age > c.maxAge / 3) and not c.lowHunger:
-            for c2 in creatures:
-                c.targetMate(c2)
-
-
-        # === mate ===
-        if c.mateInfo['mate'] != None:
-            children = c.mateWith(c.mateInfo['mate'])
-
-            if children != []:
-                for child in children:
-                    creatures.append(child)
-                
-                continue
-
-
-        # === food/creature update ===
+        # === creature-food updates ===
         for f in food:
-            if c.inSight(f.pos) and c.foodInfo['food'] == None and not c.wellFed:
-                c.targetFood(f)
+            c.searchFood(f)
 
             if f.onConsume(c):
                 c.eatFood(f)
                 food.remove(f)
-                    
-
-        # === if food gets eaten ===
-        if c.foodInfo['food'] not in food:
-            c.targetFood(None)
-
-        # === stats update ===
-        if everyTick(framerate):
-            c.statsUpdate()
-
-        if not viewingLineGraph:
-            c.drawUpdate()
 
         c.moveUpdate()
-        reprRateAvg.append(c.traits['reprRate'])
+        c.drawUpdate()
 
-    # ===== every second updates =====
-    if everyTick(framerate):
-        lineGraphPopulation.append(len(creatures))
-        lineGraphReprRate.append(average(reprRateAvg))
-
-        for i in range(4):
-            if len(food) < 300:
-                f = Food(Vector2(random.randrange(0, 900, 10), random.randrange(0, 900, 10)), (0, 255, 0), 0.5, random.randint(5, 20))
-                food.append(f)
-
-    # ===== extinct =====
-    if len(creatures) == 0: extinct = True
-
-    # ===== line graphs =====
-    if viewingLineGraph:
-        for x in range(9000):
-            try: pygame.draw.circle(screen, (255, 255, 255), (x, screenSize.y / 2 - lineGraphPopulation[x]), 1)
-            except IndexError: pass
-            
-            try: pygame.draw.circle(screen, (0, 230, 255), (x, screenSize.y / 2 - lineGraphReprRate[x]), 1)
-            except IndexError: pass
+    # ===== food updates =====
+    for f in food:
+        f.drawUpdate()
 
     pygame.display.update()
     clock.tick(framerate)
