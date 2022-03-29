@@ -1,5 +1,4 @@
 ====== gonna do ======:
-- make all the creatures
 
 - add some traits
 - - strength could be used to challenge other creatures and to carry things like food
@@ -12,31 +11,15 @@
 - - - happy is the default, where a creature will just use the best option to get food
 - - loyalty will tell the creature how to interact with others. if this value is higher, they will help their friends and family if they're hurt
 
-- make moving towards food better
+- reproduction
 
 - add diseases
 
 - add events
 
 ====== doing ======:
-- better pathfinding
+- target food
 
 ====== done ======:
-
-# ===== turn =====
-def turn(self, amount):
-    if amount < 0: 
-        amount = abs(amount) % 4
-        amount = -amount
-
-    else: 
-        amount %= 4
-    
-    # == 360 / 0 ==
-    if amount == 4 or amount == -4 or amount == 0: self.dir = self.dir
-    # == 180 ==
-    elif amount == 2 or amount == -2: self.dir = Vector2(-self.dir.x, -self.dir.y)
-    # == 90 / -270 ==
-    elif amount == 1 or amount == -3: self.dir = Vector2(self.dir.y, -self.dir.x)
-    # == -90 / 270 ==
-    elif amount == -1 or amount == 3: self.dir = Vector2(-self.dir.y, self.dir.x)
+- make all the creatures
+- better pathfinding

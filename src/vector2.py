@@ -44,6 +44,9 @@ class Vector2:
 
     # ==
     def __eq__(self, other):
+        if other == None:
+            return False
+
         try:
             if self.x == other.x and self.y == other.y:
                 return True
