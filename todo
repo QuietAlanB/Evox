@@ -11,6 +11,8 @@
 - - - happy is the default, where a creature will just use the best option to get food
 - - loyalty will tell the creature how to interact with others. if this value is higher, they will help their friends and family if they're hurt
 
+- add memories
+
 - reproduction
 
 - add diseases
