@@ -23,10 +23,12 @@
 
 - add gender
 
-- add aging
+- add optimization to the food search (TargetFood)
+- - make it so it only checks food close to it
 
 ====== doing ======:
 - add bars
+- add aging
 
 ====== done ======:
 - make all the creatures

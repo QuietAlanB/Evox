@@ -16,6 +16,11 @@ class GameManager:
         def RemoveFood(self, food):
                 self.food.remove(food)
 
+        
+        def OnTimerUpdate(self, tick):
+                for creature in self.creatures:
+                        creature.OnTimerUpdate(tick)
+
 
         def Update(self):
                 for creature in self.creatures:

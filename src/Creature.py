@@ -2,13 +2,15 @@ import pygame
 import math
 import random
 from globals import *
+import globals
 from vector2 import Vector2
 from util import clamp
 
 class Creature:
-        def __init__(self, pos, health, hunger, reproduction, traits):
+        def __init__(self, pos, age, health, hunger, reproduction, traits):
                 self.pos = pos * tileSize
 
+                self.age = age
                 self.health = health
                 self.hunger = hunger
                 self.reproduction = reproduction
@@ -121,9 +123,14 @@ class Creature:
         def Die(self):
                 GameMan.RemoveCreature(self)
 
+        
+        # THIS IS TO BE RUN EVERY SECOND, THOUGH IT IS CONFIGURABLE
         def OnTimerUpdate(self, tick):
-                if ticks % tick != 0:
+                if globals.ticks % tick != 0:
                         return
+
+                self.hunger['amount'] -= self.hunger['loss']
+                self.reproduction['amount'] += self.reproduction['rate']
 
                 if self.hunger['amount'] <= 0:
                         self.health['amount'] -= self.hunger['loss'] * 3
@@ -200,7 +207,33 @@ class Creature:
                         )
 
                 if self.showBars:
+                        yOffset = self.pos.y - width
+                        health = self.health['amount'] / 5
+                        hunger = self.hunger['amount'] / 5
+                        reproduction = self.reproduction['amount'] / 5  
+
                         pygame.draw.rect(
                                 screen, (0, 255, 0), 
-                                ()
+                                (self.pos.x, yOffset, health, width)
+                        )
+
+                        yOffset -= width
+
+                        pygame.draw.rect(
+                                screen, (255, 128, 0), 
+                                (self.pos.x, yOffset, hunger, width)
+                        )
+
+                        yOffset -= width
+
+                        pygame.draw.rect(
+                                screen, (255, 0, 200), 
+                                (self.pos.x, yOffset, reproduction, width)
+                        )
+
+                        yOffset -= width
+
+                        pygame.draw.rect(
+                                screen, (255, 255, 255), 
+                                (self.pos.x, yOffset, tileSize, width)
                         )
