@@ -5,6 +5,8 @@
 - - reprodutive rate is how fast a creature reproduces
 - - sight is used to see things, such as food, other creatures, etc.
 - - speed is used to move faster, but uses up more hunger
+- - threat response which will indicate if they panic or stay calm when theres a threat
+- - - if you panic, you will lose health faster while running
 - - personality traits
 - - - angry makes the creature more aggresive and pick fight as most options
 - - - shy makes the creature less socially interactive and will just do things alone
@@ -19,9 +21,14 @@
 
 - add events
 
+- add gender
+
+- add aging
+
 ====== doing ======:
-- target food
+- add bars
 
 ====== done ======:
 - make all the creatures
-- better pathfinding
+- target food
+- add death

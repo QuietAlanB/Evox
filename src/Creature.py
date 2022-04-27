@@ -1,6 +1,9 @@
 import pygame
+import math
+import random
 from globals import *
 from vector2 import Vector2
+from util import clamp
 
 class Creature:
         def __init__(self, pos, health, hunger, reproduction, traits):
@@ -17,9 +20,11 @@ class Creature:
 
                 self.dir = Vector2(0, 1)
                 self.curFood = None
+                self.hungryLimit = self.hunger['max'] * 0.8
 
                 self.moveTicks = 0
                 self.requiredMoveTicks = 30
+                self.showBars = True
 
 
         def Move(self, amount):
@@ -43,15 +48,34 @@ class Creature:
 
 
         def TargetFood(self, food):
-                self.curFood = food
+                if food == None:
+                        self.curFood = None
+                        return
+
+                directionAbs = abs(food.pos - self.pos)
+                distance = math.sqrt(directionAbs.x**2 + directionAbs.y**2)
+
+                # targets the food if it is:
+                # - in sight (distance > sight)
+                # - the creature is hungry (hunger < hungry limit)
+                if ((distance < self.traits['sight'] * tileSize) and
+                    self.hunger['amount'] < self.hungryLimit):
+                        self.curFood = food
+                        return True
+
+                return False
 
         def EatFood(self):
                 self.health['amount'] += self.curFood.heal
                 self.hunger['amount'] += self.curFood.hunger
-                self.curFood.Eat()
+                GameMan.RemoveFood(self.curFood)
                 self.curFood = None
                         
         def MoveToFood(self, food):
+                if food not in GameMan.food:
+                        self.TargetFood(None)
+                        return
+
                 # move left
                 if (self.pos.x > food.pos.x):
                         if self.dir != Vector2(-1, 0):
@@ -84,16 +108,57 @@ class Creature:
                         self.EatFood()
 
 
+        def MoveRandomly(self):
+                n = random.randint(0, 4)
+                rotateAmount = random.choice([-1, 1])
+
+                if n == 1:
+                        self.Rotate(rotateAmount)
+                else:
+                        self.Move(1)
+
+
+        def Die(self):
+                GameMan.RemoveCreature(self)
+
+        def OnTimerUpdate(self, tick):
+                if ticks % tick != 0:
+                        return
+
+                if self.hunger['amount'] <= 0:
+                        self.health['amount'] -= self.hunger['loss'] * 3
+
+
         def Update(self):
+                self.health['amount'] = clamp(
+                        self.health['amount'],
+                        0, self.health['max']
+                        )
+                self.hunger['amount'] = clamp(
+                        self.hunger['amount'],
+                        0, self.hunger['max']
+                        )
+                self.reproduction['amount'] = clamp(
+                        self.reproduction['amount'],
+                        0, self.reproduction['max']
+                        )
+
+                if self.health['amount'] <= 0:
+                        self.Die()
+
+
                 self.moveTicks += self.traits['speed']
 
                 if self.moveTicks > self.requiredMoveTicks:
                         if self.curFood != None:
                                 self.MoveToFood(self.curFood)
                         else:
-                                self.Move(1)
+                                self.MoveRandomly()
 
                         self.moveTicks = 0
+
+                self.pos.x = clamp(self.pos.x, 0, screenSize.x - tileSize)
+                self.pos.y = clamp(self.pos.y, 0, screenSize.y - tileSize)
 
 
         def Draw(self):
@@ -132,4 +197,10 @@ class Creature:
                         pygame.draw.rect(
                                 screen, (255, 255, 255),
                                 (addedPosX, self.pos.y , width, tileSize)
+                        )
+
+                if self.showBars:
+                        pygame.draw.rect(
+                                screen, (0, 255, 0), 
+                                ()
                         )
