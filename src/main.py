@@ -12,11 +12,19 @@ running = True
 framerate = 60
 clock = pygame.time.Clock()
 
-c = Creature(Vector2(2, 2))
+c = Creature(Vector2(2, 2),
+             {"amount":100, "max":100, "regen":0.5},
+             {"amount":100, "max":100, "loss":1},
+             {"amount":0, "max":100, "rate":1},
+             {"speed":3, "sight":7}
+             )
+
 f = Food(Vector2(10, 10), 20, 5)
 
 GameMan.AddCreature(c)
 GameMan.AddFood(f)
+
+c.TargetFood(f)
 
 while running:
         for event in pygame.event.get():

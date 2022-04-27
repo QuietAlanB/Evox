@@ -24,10 +24,13 @@ class GameManager:
                 for food in self.food:
                         food.Update()
 
+                        if food.eaten:
+                                self.RemoveFood(food)
+
 
         def Draw(self):
-                for creature in self.creatures:
-                        creature.Draw()
-
                 for food in self.food:
                         food.Draw()
+
+                for creature in self.creatures:
+                        creature.Draw()

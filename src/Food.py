@@ -6,6 +6,10 @@ class Food:
                 self.pos = pos * tileSize
                 self.hunger = hunger
                 self.heal = heal
+                self.eaten = False
+
+        def Eat(self):
+                self.eaten = True
 
         def Update(self):
                 pass
