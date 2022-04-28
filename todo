@@ -2,7 +2,7 @@
 
 - add some traits
 - - strength could be used to challenge other creatures and to carry things like food
-- - reprodutive rate is how fast a creature reproduces
+- - reprodutive rate is how fast a creatures reproductive urge goes up (so the more it is, the faster they will reproduce)
 - - sight is used to see things, such as food, other creatures, etc.
 - - speed is used to move faster, but uses up more hunger
 - - threat response which will indicate if they panic or stay calm when theres a threat
@@ -15,22 +15,22 @@
 
 - add memories
 
-- reproduction
-
 - add diseases
 
 - add events
 
-- add gender
+- give creatures random names
 
 - add optimization to the food search (TargetFood)
 - - make it so it only checks food close to it
 
 ====== doing ======:
-- add bars
-- add aging
 
 ====== done ======:
 - make all the creatures
 - target food
 - add death
+- add bars
+- add aging
+- add gender
+- reproduction

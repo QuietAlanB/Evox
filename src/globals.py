@@ -5,7 +5,7 @@ from vector2 import Vector2
 screenSize = Vector2(900, 900)
 screen = pygame.display.set_mode((screenSize.x, screenSize.y))
 tileSize = 20
-GameMan = GameManager()
+gameMan = GameManager()
 ticks = 0
 colors = {
         "male": (75, 75, 255),
