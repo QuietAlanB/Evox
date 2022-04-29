@@ -11,12 +11,12 @@ running = True
 framerate = 60
 clock = pygame.time.Clock()
 
-for i in range(6):
+for i in range(10):
         c = Creature(Vector2(random.randint(0, 44), random.randint(0, 45)),
                 random.choice(['male', 'female']),
                 {"amount":0, "max":gameMan.maxAge},
                 {"amount":100, "max":100, "regen":0.5},
-                {"amount":50, "max":100, "loss":1},
+                {"amount":100, "max":100, "loss":1},
                 {"amount":0, "max":100, "rate":1},
                 {"speed":3, "sight":7}
                 )
@@ -24,15 +24,15 @@ for i in range(6):
         gameMan.AddCreature(c)
 
 
-for i in range(200):
+for i in range(400):
         f = Food(Vector2(random.randint(0, 44), random.randint(0, 44)), 20, 5)
         gameMan.AddFood(f)
 
-graphData = open("src/graphdata.txt", "w", -1, "utf-8")
+graphData = open("src/graph/graphdata.txt", "w", -1, "utf-8")
 graphData.write("")
 graphData.close()
 
-graphData = open("src/graphdata.txt", "a", -1, "utf-8")
+graphData = open("src/graph/graphdata.txt", "a", -1, "utf-8")
 
 while running:
         for event in pygame.event.get():
