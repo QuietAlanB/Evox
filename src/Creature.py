@@ -176,17 +176,17 @@ class Creature:
                 for i in range(random.randint(0, 3)):
                         gender = random.choice(["male", "female"])
                         health = {
-                                "amount":100,
+                                "amount":self.health['amount'],
                                 "max":self.health['max'],
                                 "regen": self.health['regen']
                         }
                         hunger = {
-                                "amount":60,
+                                "amount":self.health['amount'],
                                 "max":self.hunger['max'],
                                 "loss": self.hunger['loss']
                         }
                         reproduction = {
-                                "amount":50,
+                                "amount":0,
                                 "max":self.reproduction['max'],
                                 "rate": self.reproduction['rate']
                         }
