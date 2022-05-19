@@ -2,7 +2,7 @@ class GameManager:
         def __init__(self):
                 self.creatures = []
                 self.food = []
-                self.maxAge = 120
+                self.maxAge = 80
 
         def AddCreature(self, creature):
                 self.creatures.append(creature)

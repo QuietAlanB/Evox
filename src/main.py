@@ -11,28 +11,22 @@ running = True
 framerate = 60
 clock = pygame.time.Clock()
 
-for i in range(10):
+for i in range(12):
         c = Creature(Vector2(random.randint(0, 44), random.randint(0, 45)),
                 random.choice(['male', 'female']),
                 {"amount":0, "max":gameMan.maxAge},
                 {"amount":100, "max":100, "regen":0.5},
                 {"amount":100, "max":100, "loss":1},
                 {"amount":0, "max":100, "rate":1},
-                {"speed":3, "sight":7}
+                {"speed":3, "sight":7, "threatResponse":random.randint(0, 1)}
                 )
 
         gameMan.AddCreature(c)
 
 
-for i in range(400):
+for i in range(150):
         f = Food(Vector2(random.randint(0, 44), random.randint(0, 44)), 20, 5)
         gameMan.AddFood(f)
-
-graphData = open("src/graph/graphdata.txt", "w", -1, "utf-8")
-graphData.write("")
-graphData.close()
-
-graphData = open("src/graph/graphdata.txt", "a", -1, "utf-8")
 
 while running:
         for event in pygame.event.get():
@@ -44,9 +38,6 @@ while running:
         gameMan.OnTimerUpdate(framerate)
         gameMan.Update()
         gameMan.Draw()
-
-        if globals.ticks % framerate == 0:
-                graphData.write(f"{int(globals.ticks / framerate)} {len(gameMan.creatures)}\n")
 
         globals.ticks += 1
 

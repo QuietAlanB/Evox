@@ -22,7 +22,8 @@ class Creature:
                 self.traits = {
                         "sight": traits['sight'],
                         "speed": traits['speed'],
-                        "reprRate": self.reproduction['rate']
+                        "reprRate": self.reproduction['rate'],
+                        "threatResponse": traits['threatResponse']
                 }
 
                 self.dir = Vector2(0, 1)
@@ -173,7 +174,7 @@ class Creature:
                         self.Mate()
                 
         def Mate(self):
-                for i in range(random.randint(0, 3)):
+                for i in range(random.randint(0, 4)):
                         gender = random.choice(["male", "female"])
                         health = {
                                 "amount":self.health['amount'],
