@@ -1,36 +1,7 @@
 ====== gonna do ======:
 
-- add some traits
-- - strength could be used to challenge other creatures and to carry things like food
-- - reprodutive rate is how fast a creatures reproductive urge goes up (so the more it is, the faster they will reproduce)
-- - sight is used to see things, such as food, other creatures, etc.
-- - speed is used to move faster, but uses up more hunger
-- - threat response which will indicate if they panic or stay calm when theres a threat
-- - - if you panic, you will lose health faster while running
-- - personality traits
-- - - angry makes the creature more aggresive and pick fight as most options
-- - - shy makes the creature less socially interactive and will just do things alone
-- - - happy is the default, where a creature will just use the best option to get food
-- - loyalty will tell the creature how to interact with others. if this value is higher, they will help their friends and family if they're hurt
 
-- add memories
-
-- add diseases
-
-- add events
-
-- give creatures random names
-
-- add optimization to the food search (TargetFood)
-- - make it so it only checks food close to it
 
 ====== doing ======:
 
 ====== done ======:
-- make all the creatures
-- target food
-- add death
-- add bars
-- add aging
-- add gender
-- reproduction
